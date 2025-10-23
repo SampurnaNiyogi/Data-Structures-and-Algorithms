@@ -6,55 +6,54 @@ struct Node {
     struct Node* next;
 };
 
-struct Node* top = NULL;
-
-void push(int value) {
+struct Node* push(struct Node *head, int value) {
     struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    if (newNode == NULL) {
-        printf("Heap Overflow! Cannot add element.\n");
-        return;
-    }
     newNode->data = value;
-    newNode->next = top;
-    top = newNode;
-    printf("%d pushed to stack.\n", value);
+    newNode->next = NULL;
+    if (head == NULL){
+        head = newNode;
+        return head;
+    }
+    newNode->next = head;
+    head = newNode;
+    return head;
 }
 
-int pop() {
-    if (top == NULL) {
-        printf("Stack Underflow! Cannot pop from an empty stack.\n");
+int pop(struct Node *head) {
+    if (head == NULL){
+        printf("Underflow condition");
         return -1;
     }
-    struct Node* temp = top;
-    int poppedValue = temp->data;
-    top = top->next;
-    free(temp);
-    return poppedValue;
+    struct Node *temp = head;
+    head = head->next;
+    return temp->data;
 }
 
-int peek() {
-    if (top == NULL) {
-        printf("Stack is empty.\n");
+int peek(struct Node *head) {
+    if (head == NULL){
+        printf("Stack is empty");
         return -1;
     }
-    return top->data;
+    struct Node *temp = head;
+    return temp->data;
 }
 
-void display() {
-    if (top == NULL) {
-        printf("Stack is empty.\n");
+void display(struct Node *head) {
+    if (head == NULL){
+        printf("Stack is empty");
         return;
     }
-    struct Node* ptr = top;
-    printf("Stack elements (from top to bottom): ");
-    while (ptr != NULL) {
-        printf("%d -> ", ptr->data);
-        ptr = ptr->next;
+    struct Node *curr = head;
+    while (curr->next != NULL){
+        printf("%d -> ", curr->data);
+        curr = curr->next;        
     }
-    printf("NULL\n");
+    printf("%d", curr->data);
 }
 
 int main() {
+    struct Node *head = (struct Node *)malloc(sizeof(struct Node));
+    head = NULL;
     int choice, value;
     printf("\n--- Stack Implementation using Linked List ---\n");
     while (1) {
@@ -71,22 +70,22 @@ int main() {
             case 1:
                 printf("Enter the value to push: ");
                 scanf("%d", &value);
-                push(value);
+                head = push(head, value);
                 break;
             case 2:
-                value = pop();
+                value = pop(head);
                 if (value != -1) {
                     printf("Popped value is: %d\n", value);
                 }
                 break;
             case 3:
-                value = peek();
+                value = peek(head);
                 if (value != -1) {
                     printf("The top element is: %d\n", value);
                 }
                 break;
             case 4:
-                display();
+                display(head);
                 break;
             case 5:
                 printf("Exiting the program.\n");
