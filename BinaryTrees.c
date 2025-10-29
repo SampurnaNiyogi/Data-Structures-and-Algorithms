@@ -46,18 +46,22 @@ struct node *dequeue(struct queueList *myqueue){
     return tempNode;
 }
 
-int arr[13] = {1, 2, 4, -1, -1, 5, -1, -1, 3, -1, 6, -1, -1};
-int idx = -1;
-struct node *buildBinaryTreePreorder(){
-    idx++;
-    if (arr[idx] == -1){
+struct node* buildTree(int* preorder, int preorderSize, int* inorder, int inorderSize) {
+    if (preorderSize == 0 || inorderSize == 0) {
         return NULL;
     }
-    struct node *newnode = (struct node *)malloc(sizeof(struct node));
-    newnode->data = arr[idx];
-    newnode->left = buildBinaryTreePreorder();
-    newnode->right = buildBinaryTreePreorder();
-    return newnode;
+    struct node *newNode = (struct node *)malloc(sizeof(struct node));
+    newNode->data = preorder[0];
+    int i, rootIndexInInorder = -1;
+    for (i = 0; i < inorderSize; i++){
+        if (inorder[i] == preorder[0]) {
+            rootIndexInInorder = i;
+            break;
+        }
+    }
+    newNode->left = buildTree(preorder + 1, rootIndexInInorder, inorder, rootIndexInInorder);
+    newNode->right = buildTree(preorder + 1 + rootIndexInInorder,inorderSize - rootIndexInInorder - 1 , inorder + rootIndexInInorder + 1, inorderSize - rootIndexInInorder - 1);
+    return newNode;
 }
 
 void preorderTraversal(struct node *root){
@@ -121,7 +125,9 @@ void levelorderTraversal(struct node *root){
 }
 
 int main(){
-    struct node *root = buildBinaryTreePreorder();
+    int preOrderArray[] = {3, 9, 20, 15, 7};
+    int inOrderArray[] = {9, 3, 15, 20, 7};
+    struct node *root = buildTree(preOrderArray, 5, inOrderArray, 5);
     printf("%d", root->data);
     printf("\n--------PreOrder Traversal------------\n");
     preorderTraversal(root);
